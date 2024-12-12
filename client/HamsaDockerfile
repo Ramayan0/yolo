@@ -1,0 +1,33 @@
+# Stage 1: Build
+FROM node:14-slim AS build
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the package.json and package-lock.json files to the container
+COPY package*.json ./
+
+# Install only production dependencies
+ENV NODE_ENV=production
+RUN npm install
+
+# Copy the rest of the application code to the container
+COPY . .
+
+# Stage 2: Runtime
+FROM alpine:3.16.7
+
+# Set the working directory
+WORKDIR /app
+
+# Install necessary runtime dependencies (Node.js, not npm)
+RUN apk add --no-cache nodejs
+
+# Copy built application from the build stage
+COPY --from=build /usr/src/app /app
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Define the command to run your app
+CMD ["npm", "start"]

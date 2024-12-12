@@ -1,0 +1,30 @@
+# Stage 1: Build
+FROM node:14 AS build
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Stage 2: Runtime
+FROM alpine:3.16.7
+
+# Set working directory
+WORKDIR /app
+
+# Install necessary runtime dependencies
+RUN apk update && apk add --update nodejs
+
+# Copy built application from the previous stage
+COPY --from=build /usr/src/app /app
+
+# Expose the application's port
+EXPOSE 5000
+
+# Define the command to run the app
+CMD ["node", "server.js"]
