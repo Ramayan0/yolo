@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+
+  hamsa-client:
+    build:
+      context: ./client
+      dockerfile: HamsaDockerfile
+    image: hamsa/yolo-client:v1.0.0
+    container_name: hamsa-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - hamsa-backend
+    networks:
+      - hamsa-net
+
+  hamsa-backend:
+    build:
+      context: ./backend
+      dockerfile: HamsaDockerfile
+    image: hamsa/yolo-backend:v1.0.0
+    container_name: hamsa-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - hamsa-mongo
+    networks:
+      - hamsa-net
+
+  hamsa-mongo:
+    image: mongo:latest
+    container_name: hamsa-mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - hamsa-net
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  hamsa-net:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
