@@ -7,7 +7,7 @@ const upload = multer();
 const productRoute = require('./routes/api/productRoute');
 
 // Connecting to the Database
-let mongodb_url = 'mongodb://localhost/';
+let mongodb_url = 'mongodb://hamsa-mongo/';
 let dbName = 'yolomy';
 
 // define a url to connect to the database
@@ -22,7 +22,7 @@ db.once('open', ()=>{
 
 // Check for DB Errors
 db.on('error', (error)=>{
-    console.log(error);
+    console.error('MongoDB connection error:', error.message);
 })
 
 // Initializing express

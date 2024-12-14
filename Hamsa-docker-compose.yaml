@@ -1,32 +1,36 @@
-version: "3.8"
+version: '3.8'
 
 services:
-
   hamsa-client:
     build:
-      context: ./client
-      dockerfile: HamsaDockerfile
+      context: ./client  # Path to your client directory
+      dockerfile: HamsaDockerfile  # Make sure this is the correct path and filename
     image: hamsa/yolo-client:v1.0.0
     container_name: hamsa-client
     ports:
-      - "3000:80"
+      - "3000:3000"  # Mapping port 3000 on your local machine to container port 3000
     depends_on:
       - hamsa-backend
     networks:
       - hamsa-net
+    stdin_open: true
+    tty: true  # Ensures container stays alive for debugging
 
   hamsa-backend:
-    build:
-      context: ./backend
-      dockerfile: HamsaDockerfile
     image: hamsa/yolo-backend:v1.0.0
     container_name: hamsa-backend
     ports:
       - "5000:5000"
     depends_on:
       - hamsa-mongo
+    environment:
+      - MONGODB_URI=mongodb://hamsa-mongo:27017/yolomy
     networks:
       - hamsa-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      retries: 3
 
   hamsa-mongo:
     image: mongo:latest
@@ -35,13 +39,7 @@ services:
       - "27017:27017"
     networks:
       - hamsa-net
-    volumes:
-      - mongo-data:/data/db
 
 networks:
   hamsa-net:
     driver: bridge
-
-volumes:
-  mongo-data:
-    driver: local
