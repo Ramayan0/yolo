@@ -1,13 +1,20 @@
----
-- name: Set up MongoDB Docker container
+
+- name: Pull MongoDB Docker image
+  docker_image:
+    name: "{{ mongodb.image }}"
+    source: pull
+  tags:
+    - mongodb
+
+- name: Create MongoDB container
   docker_container:
-    name: hamsa-mongo
-    image: mongo:latest
+    name: "{{ mongodb.container_name }}"
+    image: "{{ mongodb.image }}"
     state: started
     restart_policy: always
     published_ports:
-      - "27017:27017"
+      - "{{ mongodb.port }}:{{ mongodb.port }}"
     networks:
-      - hamsa-net
+      - "{{ mongodb.network }}"
   tags:
     - mongodb

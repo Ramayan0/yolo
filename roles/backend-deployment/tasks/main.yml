@@ -1,27 +1,28 @@
----
-- name: Build and run backend Docker container
-  docker_container:
-    name: hamsa-backend
-    image: hamsa/yolo-backend:v1.0.0
-    state: started
-    restart_policy: always
-    published_ports:
-      - "5000:5000"
-    environment:
-      MONGODB_URI: "mongodb://hamsa-mongo:27017/yolomy"
-    depends_on:
-      - hamsa-mongo
-    networks:
-      - hamsa-net
-  tags:
-    - backend
+# roles/backend-deployment/tasks/main.yml
 
 - name: Build Docker image for backend
   docker_image:
     build:
-      path: /vagrant/backend
-      dockerfile: Dockerfile
-    name: hamsa/yolo-backend:v1.0.0
+      path: "{{ backend.context }}"
+      dockerfile: "{{ backend.dockerfile }}"
+    name: "{{ backend.image }}"
     tag: latest
+  tags:
+    - backend
+
+- name: Run backend Docker container
+  docker_container:
+    name: "{{ backend.container_name }}"
+    image: "{{ backend.image }}"
+    state: started
+    restart_policy: always
+    published_ports:
+      - "{{ backend.port }}:{{ backend.port }}"
+    environment:
+      MONGODB_URI: "{{ backend.mongodb_uri }}"
+    depends_on:
+      - hamsa-mongo
+    networks:
+      - hamsa-net
   tags:
     - backend

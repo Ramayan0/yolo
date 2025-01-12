@@ -1,0 +1,7 @@
+
+frontend:
+  image: hamsa/yolo-client:v1.0.0
+  container_name: hamsa-client
+  port: 3000
+  context: ./client  # Path to your client directory for Docker build
+  dockerfile: HamsaDockerfile  # Path to your Dockerfile (in the client directory)

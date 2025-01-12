@@ -1,9 +1,64 @@
 ---
-- name: Ansible playbook to dockerize and run yolo e-commerce app using ansible
+- name: Deploy YOLO E-Commerce Application Using Docker
   hosts: all
   become: true
-  roles: 
+  roles:
     - frontend-deployment
-    - setup-mongodb   
+    - setup-mongodb
     - backend-deployment
-    
+
+  tasks:
+    - name: Block for MongoDB Setup
+      block:
+        - name: Pull MongoDB Docker image
+          docker_image:
+            name: "{{ mongodb.image }}"
+            source: pull
+        - name: Create MongoDB container
+          docker_container:
+            name: "{{ mongodb.container_name }}"
+            image: "{{ mongodb.image }}"
+            state: started
+            restart_policy: always
+            published_ports:
+              - "{{ mongodb.port }}:{{ mongodb.port }}"
+            networks:
+              - "{{ mongodb.network }}"
+      tags:
+        - mongodb
+
+    - name: Block for Frontend Setup
+      block:
+        - name: Pull Frontend Docker image
+          docker_image:
+            name: "{{ frontend.image }}"
+            source: pull
+        - name: Create Frontend container
+          docker_container:
+            name: "{{ frontend.container_name }}"
+            image: "{{ frontend.image }}"
+            state: started
+            ports:
+              - "{{ frontend.port }}:{{ frontend.port }}"
+            networks:
+              - "{{ frontend.network }}"
+      tags:
+        - frontend
+
+    - name: Block for Backend Setup
+      block:
+        - name: Pull Backend Docker image
+          docker_image:
+            name: "{{ backend.image }}"
+            source: pull
+        - name: Create Backend container
+          docker_container:
+            name: "{{ backend.container_name }}"
+            image: "{{ backend.image }}"
+            state: started
+            ports:
+              - "{{ backend.port }}:{{ backend.port }}"
+            networks:
+              - "{{ backend.network }}"
+      tags:
+        - backend
