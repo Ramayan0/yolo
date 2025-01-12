@@ -1,16 +1,27 @@
 ---
-- name: Pull image from repository
-  docker_image:
-    name: brianbwire/brian-yolo-backend:v1.0.0
-    source: pull
-
-- name: Create Node.js Backend Container
+- name: Build and run backend Docker container
   docker_container:
-    name: brian-yolo-backend
-    image: brianbwire/brian-yolo-backend:v1.0.0
-    networks:
-      - name: app-net
-    ports:
+    name: hamsa-backend
+    image: hamsa/yolo-backend:v1.0.0
+    state: started
+    restart_policy: always
+    published_ports:
       - "5000:5000"
-    command: "npm start"
-  become: yes
+    environment:
+      MONGODB_URI: "mongodb://hamsa-mongo:27017/yolomy"
+    depends_on:
+      - hamsa-mongo
+    networks:
+      - hamsa-net
+  tags:
+    - backend
+
+- name: Build Docker image for backend
+  docker_image:
+    build:
+      path: /vagrant/backend
+      dockerfile: Dockerfile
+    name: hamsa/yolo-backend:v1.0.0
+    tag: latest
+  tags:
+    - backend

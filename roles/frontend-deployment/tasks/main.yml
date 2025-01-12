@@ -1,0 +1,29 @@
+---
+- name: Build and run frontend Docker container
+  docker_container:
+    name: hamsa-client
+    image: hamsa/yolo-client:v1.0.0
+    state: started
+    restart_policy: always
+    published_ports:
+      - "3000:3000"
+    volumes:
+      - /vagrant/client:/app
+    networks:
+      - hamsa-net
+    depends_on:
+      - hamsa-backend
+    stdin_open: true
+    tty: true
+  tags:
+    - frontend
+
+- name: Build Docker image for frontend
+  docker_image:
+    build:
+      path: /vagrant/client
+      dockerfile: Dockerfile
+    name: hamsa/yolo-client:v1.0.0
+    tag: latest
+  tags:
+    - frontend

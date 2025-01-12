@@ -1,14 +1,13 @@
 ---
-- name: Run MongoDB Container
+- name: Set up MongoDB Docker container
   docker_container:
-    name: app-mongo
-    image: mongo
-    ports:
-      - '27017:27017'
-    volumes:
-      - ./app-mongo-data:/data/db
+    name: hamsa-mongo
+    image: mongo:latest
+    state: started
+    restart_policy: always
+    published_ports:
+      - "27017:27017"
     networks:
-      - name: app-net
+      - hamsa-net
   tags:
-    - database
-    - backend
+    - mongodb
