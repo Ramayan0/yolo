@@ -2,12 +2,17 @@
 - name: Deploy YOLO E-Commerce Application Using Docker
   hosts: all
   become: true
-  roles:
-    - frontend-deployment
-    - setup-mongodb
-    - backend-deployment
 
   tasks:
+    - name: Clone the YOLO repository from GitHub
+      git:
+        repo: 'https://github.com/Ramayan0/yolo'
+        dest: /home/vagrant/yolo
+        version: master
+        force: yes
+      tags:
+        - clone
+
     - name: Block for MongoDB Setup
       block:
         - name: Pull MongoDB Docker image
