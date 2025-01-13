@@ -8,6 +8,13 @@
     tag: latest
   when: frontend.image not in lookup('pipe', 'docker images -q')
 
+- name: Wait for Backend container to be ready
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: "{{ backend.port }}"
+    state: started
+    timeout: 60
+
 - name: Create Frontend container
   docker_container:
     name: "{{ frontend.container_name }}"
@@ -18,7 +25,5 @@
       - "{{ frontend.port }}"
     published_ports:
       - "{{ frontend.port }}:{{ frontend.port }}"
-    depends_on:
-      - backend-deployment
     networks:
       - name: "{{ mongodb.network }}"

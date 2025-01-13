@@ -1,5 +1,5 @@
 backend:
-  image: "hamsa/yolo-backend:v1.0.0"
+  image: "hamsahassan/yolo-backend:1.0"
   container_name: "hamsa-backend"
   port: "5000"  # Port for the backend
   context: "./backend"  # Path to your backend directory for Docker build

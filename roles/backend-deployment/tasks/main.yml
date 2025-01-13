@@ -14,13 +14,9 @@
     image: "{{ backend.image }}"
     state: started
     restart_policy: unless-stopped
-    exposed_ports:
-      - "{{ backend.port }}"
     published_ports:
       - "{{ backend.port }}:{{ backend.port }}"
-    environment:
-      - MONGODB_URI={{ backend.mongodb_uri }}
-    depends_on:
-      - setup-mongodb
+    env:
+      MONGODB_URI: "{{ backend.mongodb_uri }}"
     networks:
       - name: "{{ mongodb.network }}"
