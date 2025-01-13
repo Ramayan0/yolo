@@ -28,15 +28,20 @@ Ensure the following are installed on the host machine:
 git clone https://github.com/Ramayan0/yolo.git
 cd yolo
 
-### Start the Vagrant Machine
+```
 
+### Start the Vagrant Machine
+```bash
 vagrant up
+
+```
 
 - This will initialize a virtual machine using Vagrant and configure SSH access.
 
 ### Prepare the Inventory File
 - The inventory.yml file is pre-configured with the following content:
 
+```bash
 all:
   hosts:
     myserver:
@@ -45,11 +50,13 @@ all:
       ansible_user: vagrant
       ansible_private_key_file: .vagrant/machines/default/virtualbox/private_key
 
+```
 ### Run the Ansible Playbook
 - Deploy the platform by running:
 
+```bash
 ansible-playbook -i inventory.yml playbook.yml
-
+```
 ### Access the Application
 
 Frontend: Open http://127.0.0.1:3000 in your browser.
@@ -61,6 +68,7 @@ MongoDB: Runs internally on port 27017.
 - Restart the backend or database using Docker and confirm that the data persists.
 
 ## File Structure
+```bash
 .
 ├── README.md
 ├── explanation.md
@@ -76,7 +84,7 @@ MongoDB: Runs internally on port 27017.
 │   ├── setup-mongodb/
 │   │   ├── tasks/
 │   │   │   └── main.yml
-
+```
 ## MongoDB Persistence
 - MongoDB data is stored in a Docker volume to ensure persistence across   container restarts. This is configured in the setup-mongodb role.
 
