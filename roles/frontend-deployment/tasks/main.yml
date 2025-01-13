@@ -1,23 +1,10 @@
-
 - name: Build Docker image for frontend
   docker_image:
+    name: "{{ frontend.image }}"  # specify the name of the image (e.g. 'hamsa/yolo-client')
+    source: build  # this tells Ansible to build the image
     build:
-      path: "{{ frontend.context }}"
-      dockerfile: "{{ frontend.dockerfile }}"
-    name: "{{ frontend.image }}"
-    tag: latest
-  tags:
-    - frontend
-
-- name: Run frontend Docker container
-  docker_container:
-    name: "{{ frontend.container_name }}"
-    image: "{{ frontend.image }}"
-    state: started
-    restart_policy: always
-    published_ports:
-      - "{{ frontend.port }}:{{ frontend.port }}"
-    networks:
-      - hamsa-net
+      path: "{{ frontend.build_context }}"  # path to the Dockerfile context directory
+      dockerfile: "{{ frontend.dockerfile }}"  # Dockerfile name if not default (Dockerfile)
+    tag: "{{ frontend.image_tag }}"  # optional: specify a tag, e.g., 'v1.0.0'
   tags:
     - frontend
