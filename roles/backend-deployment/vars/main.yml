@@ -1,9 +1,8 @@
-# roles/backend-deployment/vars/main.yml
-
 backend:
-  image: hamsa/yolo-backend:v1.0.0
-  container_name: hamsa-backend
-  port: 5000
-  context: ./backend  # Path to your backend directory for Docker build
-  dockerfile: HamsaDockerfile  # Path to your Dockerfile (in the backend directory)
-  mongodb_uri: "mongodb://hamsa-mongo:27017/yolomy"
+  image: "hamsa/yolo-backend:v1.0.0"
+  container_name: "hamsa-backend"
+  port: "5000"  # Port for the backend
+  context: "./backend"  # Path to your backend directory for Docker build
+  dockerfile: "HamsaDockerfile"  # Dockerfile for backend
+  mongodb_uri: "mongodb://hamsa-mongo:27017/yolomy"  # MongoDB connection URI
+  network: hamsa-net  # Network for communication with frontend and mongo

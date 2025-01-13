@@ -1,20 +1,22 @@
+---
+# MongoDB Setup Role - Deploy MongoDB container
 
-- name: Pull MongoDB Docker image
+- name: Pull MongoDB Docker image if it doesn't exist locally
   docker_image:
     name: "{{ mongodb.image }}"
     source: pull
-  tags:
-    - mongodb
+    tag: latest
+  when: mongodb.image not in lookup('pipe', 'docker images -q')
 
 - name: Create MongoDB container
   docker_container:
     name: "{{ mongodb.container_name }}"
     image: "{{ mongodb.image }}"
     state: started
-    restart_policy: always
+    restart_policy: unless-stopped
+    exposed_ports:
+      - "{{ mongodb.port }}"
     published_ports:
       - "{{ mongodb.port }}:{{ mongodb.port }}"
     networks:
-      - "{{ mongodb.network }}"
-  tags:
-    - mongodb
+      - name: "{{ mongodb.network }}"

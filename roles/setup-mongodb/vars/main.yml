@@ -1,6 +1,5 @@
-# roles/setup-mongodb/vars/main.yml
 mongodb:
-  image: mongo:latest
-  container_name: hamsa-mongo
-  port: 27017
+  image: "mongo:latest"
+  container_name: "hamsa-mongo"
+  port: "27017"
   network: hamsa-net

@@ -1,28 +1,26 @@
-# roles/backend-deployment/tasks/main.yml
+---
+# Backend Deployment Role - Deploy Backend container
 
-- name: Build Docker image for backend
+- name: Pull Backend Docker image if it doesn't exist locally
   docker_image:
-    build:
-      path: "{{ backend.context }}"
-      dockerfile: "{{ backend.dockerfile }}"
     name: "{{ backend.image }}"
+    source: pull
     tag: latest
-  tags:
-    - backend
+  when: backend.image not in lookup('pipe', 'docker images -q')
 
-- name: Run backend Docker container
+- name: Create Backend container
   docker_container:
     name: "{{ backend.container_name }}"
     image: "{{ backend.image }}"
     state: started
-    restart_policy: always
+    restart_policy: unless-stopped
+    exposed_ports:
+      - "{{ backend.port }}"
     published_ports:
       - "{{ backend.port }}:{{ backend.port }}"
     environment:
-      MONGODB_URI: "{{ backend.mongodb_uri }}"
+      - MONGODB_URI={{ backend.mongodb_uri }}
     depends_on:
-      - hamsa-mongo
+      - setup-mongodb
     networks:
-      - hamsa-net
-  tags:
-    - backend
+      - name: "{{ mongodb.network }}"

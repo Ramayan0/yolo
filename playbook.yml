@@ -1,69 +1,53 @@
 ---
 - name: Deploy YOLO E-Commerce Application Using Docker
-  hosts: all
+  hosts: myserver
   become: true
+  vars:
+    frontend:
+      container_name: hamsa-client
+      image: hamsahassan/yolo-client:1.0  # Update this with the correct image name
+      port: 3000
+    backend:
+      container_name: hamsa-backend
+      image: hamsahassan/yolo-backend:1.0  # Update this with the correct image name
+      port: 5000
+      mongodb_uri: mongodb://hamsa-mongo:27017/yolomy
+    mongodb:
+      container_name: hamsa-mongo
+      image: mongo:latest
+      port: 27017
+      network: hamsa-net
 
   tasks:
+
+    # Clone the YOLO repository from GitHub
     - name: Clone the YOLO repository from GitHub
       git:
-        repo: 'https://github.com/Ramayan0/yolo'
-        dest: /home/vagrant/yolo
-        version: master
-        force: yes
-      tags:
-        - clone
+        repo: 'https://github.com/Ramayan0/yolo.git'
+        dest: /home/hamsa/yolo
 
-    - name: Block for MongoDB Setup
-      block:
-        - name: Pull MongoDB Docker image
-          docker_image:
-            name: "{{ mongodb.image }}"
-            source: pull
-        - name: Create MongoDB container
-          docker_container:
-            name: "{{ mongodb.container_name }}"
-            image: "{{ mongodb.image }}"
-            state: started
-            restart_policy: always
-            published_ports:
-              - "{{ mongodb.port }}:{{ mongodb.port }}"
-            networks:
-              - "{{ mongodb.network }}"
-      tags:
-        - mongodb
+    # Debug MongoDB variables
+    - name: Debug MongoDB variables
+      debug:
+        msg: "MongoDB Container Name: {{ mongodb.container_name }}, Image: {{ mongodb.image }}, Port: {{ mongodb.port }}, Network: {{ mongodb.network }}"
 
-    - name: Block for Frontend Setup
-      block:
-        - name: Pull Frontend Docker image
-          docker_image:
-            name: "{{ frontend.image }}"
-            source: pull
-        - name: Create Frontend container
-          docker_container:
-            name: "{{ frontend.container_name }}"
-            image: "{{ frontend.image }}"
-            state: started
-            ports:
-              - "{{ frontend.port }}:{{ frontend.port }}"
-            networks:
-              - "{{ frontend.network }}"
-      tags:
-        - frontend
+    # Debug Frontend variables
+    - name: Debug Frontend variables
+      debug:
+        msg: "Frontend Container Name: {{ frontend.container_name }}, Image: {{ frontend.image }}, Port: {{ frontend.port }}"
 
-    - name: Block for Backend Setup
-      block:
-        - name: Pull Backend Docker image
-          docker_image:
-            name: "{{ backend.image }}"
-            source: pull
-        - name: Create Backend container
-          docker_container:
-            name: "{{ backend.container_name }}"
-            image: "{{ backend.image }}"
-            state: started
-            ports:
-              - "{{ backend.port }}:{{ backend.port }}"
-            networks:
-              - "{{ backend.network }}"
-      tags:
-        - backend
+    # Debug Backend variables
+    - name: Debug Backend variables
+      debug:
+        msg: "Backend Container Name: {{ backend.container_name }}, Image: {{ backend.image }}, Port: {{ backend.port }}, MongoDB URI: {{ backend.mongodb_uri }}"
+
+    # Create Docker network for the containers
+    - name: Create Docker network for the containers
+      docker_network:
+        name: "{{ mongodb.network }}"
+        driver: bridge
+
+  roles:
+    - frontend-deployment   # Role for Frontend setup
+    - backend-deployment    # Role for Backend setup
+    - setup-mongodb    # Role for MongoDB setup

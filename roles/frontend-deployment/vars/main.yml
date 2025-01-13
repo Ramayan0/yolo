@@ -1,5 +1,8 @@
 frontend:
-  image: "hamsa/yolo-client"
+  image: "hamsahassan/yolo-client:1.0"
   build_context: "./client"  # Path to your client directory
-  dockerfile: "HamsaDockerfile"  # The Dockerfile name, assuming it's not the default 'Dockerfile'
-  image_tag: "v1.0.0"  # Specify a tag if needed, e.g. 'v1.0.0'
+  dockerfile: "HamsaDockerfile"  # Dockerfile for frontend
+  port: "3000"  # Port used by frontend
+  container_name: "hamsa-client"
+  image_tag: "v1.0.0"
+  network: hamsa-net  # Network for communication with backend and mongo
