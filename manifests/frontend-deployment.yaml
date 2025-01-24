@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yolo-client
+  labels:
+    app: yolo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: yolo
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: yolo
+        tier: frontend
+    spec:
+      containers:
+      - name: yolo-client
+        image: hamsahassan/yolo-client:v1.0.1
+        ports:
+        - containerPort: 3000

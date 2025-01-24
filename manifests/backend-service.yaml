@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: yolo-backend-service
+  labels:
+    app: yolo
+spec:
+  selector:
+    app: yolo
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: ClusterIP

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: yolo-mongo
+  labels:
+    app: yolo
+spec:
+  serviceName: "yolo-mongo"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yolo
+      tier: database
+  template:
+    metadata:
+      labels:
+        app: yolo
+        tier: database
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:5.0
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi
