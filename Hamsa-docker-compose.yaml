@@ -4,20 +4,22 @@ services:
   hamsa-client:
     build:
       context: ./client  # Path to your client directory
-      dockerfile: HamsaDockerfile  # Make sure this is the correct path and filename
-    image: hamsa/yolo-client:v1.0.0
+      dockerfile: HamsaDockerfile  # Correct Dockerfile name
+    image: hamsahassan/yolo-client:v1.0.0
     container_name: hamsa-client
     ports:
-      - "3000:3000"  # Mapping port 3000 on your local machine to container port 3000
+      - "3000:3000"  # Maps port 3000 locally to container port 3000
     depends_on:
       - hamsa-backend
     networks:
       - hamsa-net
     stdin_open: true
-    tty: true  # Ensures container stays alive for debugging
+    tty: true  # Keeps the container running for debugging
 
   hamsa-backend:
-    image: hamsa/yolo-backend:v1.0.0
+    build:
+      context: ./backend  # Path to your backend directory
+    image: hamsahassan/yolo-backend:v1.0.0
     container_name: hamsa-backend
     ports:
       - "5000:5000"
