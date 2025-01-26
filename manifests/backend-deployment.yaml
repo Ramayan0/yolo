@@ -23,11 +23,5 @@ spec:
         - containerPort: 5000
         env:
         - name: MONGO_URI
-          value: "mongodb://yolo-mongo:27017/yolomy"
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "500m"
-          limits:
-            memory: "512Mi"
-            cpu: "1000m"
+          value: "mongodb://yolo-mongo-lb:27017"
+        
