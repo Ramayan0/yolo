@@ -22,7 +22,7 @@ Before deploying the application on GKE, make sure you have the following:
 
 1. **Clone the repository:**
 
-   ```bash
+```bash
    git clone https://github.com/Ramayan0/yolo
    cd yolo-kubernetes
 ```
