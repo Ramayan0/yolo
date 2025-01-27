@@ -1,93 +1,28 @@
-# YOLO E-Commerce Application Deployment
+# Yolo Application Deployment on Google Kubernetes Engine (GKE)
 
-This project automates the deployment of the YOLO E-Commerce application using Docker, Ansible, and GitHub. The architecture includes:
+This repository contains the Kubernetes manifests and configurations for deploying the Yolo application on Google Kubernetes Engine (GKE). The application consists of a backend (Node.js with Express), a MongoDB database (deployed as a StatefulSet), and a frontend.
 
-- **Frontend**: React-based client application.
-- **Backend**: Node.js server connected to MongoDB.
-- **MongoDB**: Database for managing e-commerce data.
+## Project Overview
 
-## Features
-
-1. **Automated Deployment**: Use Ansible to orchestrate the setup of the frontend, backend, and database.
-2. **Containerized Environment**: Docker containers ensure a consistent and isolated runtime.
-3. **Custom Docker Network**: Containers communicate via a dedicated network for enhanced security and performance.
+The goal of this project is to deploy a scalable, reliable application using Kubernetes. The application is composed of:
+- A backend service that exposes a REST API to interact with the products and shopping cart.
+- A MongoDB database that stores the products and cart data.
+- A frontend (React.js) that communicates with the backend.
 
 ## Prerequisites
 
-Ensure the following are installed on the host machine:
+Before deploying the application on GKE, make sure you have the following:
+- A Google Cloud account with access to GKE.
+- A Kubernetes cluster running on GKE.
+- `kubectl` installed and configured to use your GKE cluster.
+- Docker images for the backend and frontend pushed to your container registry (e.g., Docker Hub or Google Container Registry).
+- The required YAML manifests to deploy the application.
 
-1. [Ansible](https://docs.ansible.com/)
-2. [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
-3. Git
+## Setup Instructions
 
-## Getting Started
+1. **Clone the repository:**
 
-### Clone the Repository
-
-```bash
-git clone https://github.com/Ramayan0/yolo.git
-cd yolo
-
+   ```bash
+   git clone https://github.com/Ramayan0/yolo
+   cd yolo-kubernetes
 ```
-
-### Start the Vagrant Machine
-```bash
-vagrant up
-
-```
-
-- This will initialize a virtual machine using Vagrant and configure SSH access.
-
-### Prepare the Inventory File
-- The inventory.yml file is pre-configured with the following content:
-
-```bash
-all:
-  hosts:
-    myserver:
-      ansible_host: 127.0.0.1
-      ansible_port: 2222
-      ansible_user: vagrant
-      ansible_private_key_file: .vagrant/machines/default/virtualbox/private_key
-
-```
-### Run the Ansible Playbook
-- Deploy the platform by running:
-
-```bash
-ansible-playbook -i inventory.yml playbook.yml
-```
-### Access the Application
-
-Frontend: Open http://127.0.0.1:3000 in your browser.
-Backend API: Available at http://127.0.0.1:5000.
-MongoDB: Runs internally on port 27017.
-
-### Verify Persistence
-- Add products to the e-commerce platform via the frontend.
-- Restart the backend or database using Docker and confirm that the data persists.
-
-## File Structure
-```bash
-.
-├── README.md
-├── explanation.md
-├── inventory.yml
-├── playbook.yml
-├── roles/
-│   ├── backend-deployment/
-│   │   ├── tasks/
-│   │   │   └── main.yml
-│   ├── frontend-deployment/
-│   │   ├── tasks/
-│   │   │   └── main.yml
-│   ├── setup-mongodb/
-│   │   ├── tasks/
-│   │   │   └── main.yml
-```
-## MongoDB Persistence
-- MongoDB data is stored in a Docker volume to ensure persistence across   container restarts. This is configured in the setup-mongodb role.
-
-## Additional Notes
-- Ensure that hamsahassan/yolo-client:1.0 and hamsahassan/yolo-backend:1.0 - - Docker images are up-to-date.
-- Any changes to the MongoDB URI or frontend-backend communication should be - updated in the playbook and Docker environment variables.
