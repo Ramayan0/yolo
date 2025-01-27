@@ -82,7 +82,7 @@ kubectl get svc
 - The backend service is exposed through the backend service URL.
 - MongoDB is accessible through the MongoDB LoadBalancer IP.
 
-9. Troubleshooting:
+9. **Troubleshooting:**
 
 Pods not starting: Check the logs for more details.
 
@@ -92,6 +92,22 @@ kubectl logs <pod-name>
 - MongoDB connection errors: Ensure the backend is pointing to the correct MongoDB service URL.
 - Frontend not loading: Check the network policy and ensure the frontend can reach the backend.
 ## Live Application
-You can access the live application at: http://<frontend-ip>:<port>
 
+You can access the live application at:
 
+```bash
+ kubectl port-forward svc/yolo-frontend-service 8080:80
+ ```
+
+### Access the Frontend Application
+After running the command, open your browser and navigate to:
+
+```bash
+http://localhost:8080
+```
+or 
+You can access the live application via the frontend service's external IP:
+
+```bash
+http://34.45.117.147
+```
